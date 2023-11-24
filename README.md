@@ -1,2 +1,2 @@
-# ebook_reader
+# Leitor de eBooks
 Aplicativo para leitura de eBooks.
