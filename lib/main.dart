@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ebook_reader/view/home.dart';
 
 void main() {
-  runApp(const MaterialApp(
-      title: 'Leitor de eBooks',
-      debugShowCheckedModeBanner: false,
-      home: Center(
-        child: Text('Texto'),
-      ))
+  runApp(
+      MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Leitor de eBooks',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.amber,
+          ),
+          home: const Home()
+      )
   );
 }
