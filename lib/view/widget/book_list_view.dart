@@ -41,7 +41,7 @@ class _BookListViewState extends State<BookListView> {
           return Container(
             margin: const EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.black)
+                border: Border.all(color: Colors.grey)
             ),
             child: InkWell(
               onTap: () {},
@@ -49,7 +49,27 @@ class _BookListViewState extends State<BookListView> {
                 title: Center(
                   child: Column(
                     children: [
-                      Image.network(widget._data![index].coverUrl),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black)
+                        ),
+                        child: Stack(
+                          children: [
+                            Image.network(widget._data![index].coverUrl),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  widget._favoriteCallback(widget._data![index]);
+                                  widget._data![index].favorite = !widget._data![index].favorite;
+                                });
+                              },
+                              child: widget._data![index].favorite == true
+                                ? const Icon(Icons.bookmark, color: Colors.red,)
+                                : const Icon(Icons.bookmark_border, color: Colors.black,)
+                            )
+                          ],
+                        ),
+                      ),
                       Text(widget._data![index].title,
                         style: const TextStyle(
                             fontSize: 15
