@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ebook_reader/view/home.dart';
 import 'package:ebook_reader/util/utilities.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
-void main() {
+void main() async {
   toggleDebug(false);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
 
   runApp(
       MaterialApp(
