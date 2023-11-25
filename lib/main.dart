@@ -3,7 +3,7 @@ import 'package:ebook_reader/view/home.dart';
 import 'package:ebook_reader/util/utilities.dart';
 
 void main() {
-  toggleDebug(true);
+  toggleDebug(false);
 
   runApp(
       MaterialApp(
