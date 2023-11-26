@@ -18,13 +18,11 @@ class BookGridView extends StatefulWidget {
   BookGridView(this._data, this._favorites, {super.key, required BookCallback onFavorite }) {
     _favoriteCallback = onFavorite;
 
-    /*
-    this._data?.forEach((element) {
-      if (this._favorites!.any((e) => e.name == element.name)) {
+    _data?.forEach((element) {
+      if (_favorites!.any((e) => e.id == element.id)) {
         element.favorite = true;
       }
     });
-    */
   }
 
   @override

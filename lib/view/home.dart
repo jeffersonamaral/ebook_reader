@@ -1,8 +1,11 @@
 import 'package:async/async.dart';
+import 'package:ebook_reader/controller/favorite_controller.dart';
+import 'package:ebook_reader/model/favorite_model.dart';
 import 'package:flutter/material.dart';
 
 import '../model/book_model.dart';
 import '../controller/book_controller.dart';
+import '../model/favorite_repository.dart';
 import 'widget/book_grid_view.dart';
 
 class Home extends StatefulWidget {
@@ -24,15 +27,24 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
 
   final BookController _bookController = BookController();
 
+  final FavoriteController _favoriteController = FavoriteController(FavoriteRepository());
+
   @override
   bool get wantKeepAlive => true;
 
   List<BookModel> _books = [];
 
+  List<BookModel> _favorites = [];
+
   Future<dynamic> _loadBooks() async {
     return _memoizerBooks.runOnce(() {
       return _bookController.loadBooks();
     });
+  }
+
+  void _loadFavorites() async {
+    _favorites.clear();
+    _favorites = await _favoriteController.findAll();
   }
 
   @override
@@ -52,6 +64,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
           }
         });
       });
+
+    _loadFavorites();
   }
 
   @override
@@ -98,22 +112,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                     } else {
                       List<BookModel> books = snapshot.data!;
 
-                      /*
                       books.forEach((element) {
                         if (_favorites.contains(element)) {
                           element.favorite = true;
                         }
                       });
-                      */
 
-                      return BookGridView(snapshot.data, null /*_favorites*/, onFavorite: (model) {
-                        /*
+                      return BookGridView(snapshot.data, _favorites, onFavorite: (model) {
                         if (model.favorite) {
-                          _favoriteController.delete(model);
+                          _favoriteController.delete(FavoriteModel.fromMap(model.toMap()));
                         } else {
-                          _favoriteController.save(model);
+                          _favoriteController.save(FavoriteModel.fromMap(model.toMap()));
                         }
-                        */
                       });
                     }
                   } else {

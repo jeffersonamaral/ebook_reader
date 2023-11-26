@@ -41,6 +41,7 @@ dependencies:
   vocsy_epub_viewer: ^2.0.0
   permission_handler: ^11.1.0
   dio: ^5.3.4
+  sqflite: ^2.3.0
 
 dev_dependencies:
   flutter_test:

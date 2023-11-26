@@ -20,4 +20,14 @@ class BookModel {
     coverUrl = map['cover_url'];
     downloadUrl = map['download_url'];
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'author': author,
+      'cover_url': coverUrl,
+      'download_url': downloadUrl,
+    };
+  }
 }
