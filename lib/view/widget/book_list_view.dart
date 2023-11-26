@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:ebook_reader/model/book_model.dart';
 import 'package:ebook_reader/util/types.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
 class BookListView extends StatefulWidget {
 
@@ -34,6 +34,66 @@ class BookListView extends StatefulWidget {
 
 class _BookListViewState extends State<BookListView> {
 
+  bool loading = false;
+  Dio dio = Dio();
+  String filePath = "";
+
+  Future<void> download(String url, String identifier, String bookTitle) async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      await startDownload(url, identifier, bookTitle);
+    } else {
+      loading = false;
+    }
+  }
+
+  Future<void> startDownload(String url, String identifier, String bookTitle) async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    String path = '${appDocDir.path}/$identifier.epub';
+    File file = File(path);
+
+    if (!File(path).existsSync()) {
+      await file.create();
+      await dio.download(
+        url,
+        path,
+        deleteOnError: true,
+        onReceiveProgress: (receivedBytes, totalBytes) {
+          setState(() {
+            loading = true;
+          });
+        },
+      ).whenComplete(() {
+        setState(() {
+          loading = false;
+          filePath = path;
+        });
+
+        openBook(bookTitle);
+      });
+    } else {
+      setState(() {
+        loading = false;
+        filePath = path;
+      });
+
+      openBook(bookTitle);
+    }
+  }
+
+  void openBook(String bookTitle) {
+    VocsyEpub.setConfig(
+      themeColor: Theme.of(context).primaryColor,
+      identifier: bookTitle,
+      scrollDirection: EpubScrollDirection.HORIZONTAL,
+      nightMode: true
+    );
+
+    VocsyEpub.open(
+      filePath
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -48,32 +108,10 @@ class _BookListViewState extends State<BookListView> {
             ),
             child: InkWell(
               onTap: () async {
-                Directory downloadDir = await getApplicationDocumentsDirectory();
-                String downloadUrl = widget._data![index].downloadUrl;
-                File downloadFile = File(downloadDir.path + '/'
-                    + downloadUrl.substring(downloadUrl.lastIndexOf('/')));
-
-                if (!(await downloadFile.exists())) {
-                  // FlutterDownloader.registerCallback((String id, int status, int progress) {
-                  //   print('>>>>>>>>>>>>>>>>>> $id ; $status ; $progress');
-                  // });
-
-                  final taskId = await FlutterDownloader.enqueue(
-                      url: downloadUrl,
-                      savedDir: downloadDir.path,
-                      showNotification: true,
-                      openFileFromNotification: false,
-                      saveInPublicStorage: true
-                  ).then((value) {
-
-                  }).onError((error, stackTrace) {
-                    // FIXME tratar erro na tentaiva de realizar o download
-                  });
-                }
-
-                if (await downloadFile.exists()) {
-                  print('Abrir ' + downloadFile.path);
-                }
+                download(
+                    widget._data![index].downloadUrl,
+                    widget._data![index].id.toString(),
+                    widget._data![index].title);
               },
               child: ListTile(
                 title: Center(
