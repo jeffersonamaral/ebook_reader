@@ -3,8 +3,8 @@ import 'package:ebook_reader/controller/favorite_controller.dart';
 import 'package:ebook_reader/model/favorite_model.dart';
 import 'package:flutter/material.dart';
 
-import '../model/book_model.dart';
 import '../controller/book_controller.dart';
+import '../model/book_model.dart';
 import '../model/favorite_repository.dart';
 import 'widget/book_grid_view.dart';
 
@@ -23,16 +23,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
 
   final AsyncMemoizer _memoizerBooks = AsyncMemoizer();
 
-  final AsyncMemoizer _memoizerFavorities = AsyncMemoizer();
-
   final BookController _bookController = BookController();
 
   final FavoriteController _favoriteController = FavoriteController(FavoriteRepository());
 
   @override
   bool get wantKeepAlive => true;
-
-  List<BookModel> _books = [];
 
   List<BookModel> _favorites = [];
 
@@ -74,8 +70,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
-          title: Text(_title),
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(_title,
+            style: const TextStyle(
+              color: Colors.white
+            ),
+          ),
           bottom: PreferredSize(
               preferredSize: const Size(double.infinity, kToolbarHeight),
               child: Padding(
@@ -85,8 +85,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                       TabBar(
                         controller: _tabController,
                         tabs: const [
-                          Tab(text: 'Livros'),
-                          Tab(text: 'Favoritos'),
+                          Tab(text: 'Livros', icon: Icon(Icons.book)),
+                          Tab(text: 'Favoritos', icon: Icon(Icons.star),),
                         ],
                       )
                     ],
@@ -146,20 +146,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data.length > 0) {
                     if (snapshot.hasError) {
                       return Center(
                         child: Text('Ocorreu um erro: ${snapshot.error}'),
                       );
                     } else {
-                      List<BookModel> books = snapshot.data!;
-
-                      books.forEach((element) {
-                        if (_favorites.contains(element)) {
-                          element.favorite = true;
-                        }
-                      });
-
                       return BookGridView(snapshot.data, _favorites,
                         withFavoritiesButton: false,
                         onFavorite: null,
