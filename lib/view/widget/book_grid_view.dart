@@ -17,7 +17,11 @@ class BookGridView extends StatefulWidget {
 
   final bool withFavoritiesButton;
 
-  BookGridView(this._data, this._favorites, {super.key, required BookCallback? onFavorite, boolwithFavoritiesButton = true, required this.withFavoritiesButton }) {
+  BookGridView(this._data, this._favorites,
+      {super.key,
+        required BookCallback? onFavorite,
+        boolwithFavoritiesButton = true,
+        required this.withFavoritiesButton }) {
     _favoriteCallback = onFavorite;
 
     _data?.forEach((element) {
@@ -34,50 +38,46 @@ class BookGridView extends StatefulWidget {
 
 class _BookGridViewState extends State<BookGridView> {
 
-  bool loading = false;
-  Dio dio = Dio();
-  String filePath = "";
+  bool _loading = false;
+  Dio _dio = Dio();
+  String _filePath = "";
 
   Future<void> download(String url, String identifier, String bookTitle) async {
     if (Platform.isAndroid || Platform.isIOS) {
-      await startDownload(url, identifier, bookTitle);
-    } else {
-      loading = false;
-    }
-  }
+      Directory appDocDir = await getApplicationDocumentsDirectory();
 
-  Future<void> startDownload(String url, String identifier, String bookTitle) async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
+      String path = '${appDocDir.path}/$identifier.epub';
+      File file = File(path);
 
-    String path = '${appDocDir.path}/$identifier.epub';
-    File file = File(path);
-
-    if (!File(path).existsSync()) {
-      await file.create();
-      await dio.download(
-        url,
-        path,
-        deleteOnError: true,
-        onReceiveProgress: (receivedBytes, totalBytes) {
+      if (!File(path).existsSync()) {
+        await file.create();
+        await _dio.download(
+          url,
+          path,
+          deleteOnError: true,
+          onReceiveProgress: (receivedBytes, totalBytes) {
+            setState(() {
+              _loading = true;
+            });
+          },
+        ).whenComplete(() {
           setState(() {
-            loading = true;
+            _loading = false;
+            _filePath = path;
           });
-        },
-      ).whenComplete(() {
+
+          openBook(bookTitle);
+        });
+      } else {
         setState(() {
-          loading = false;
-          filePath = path;
+          _loading = false;
+          _filePath = path;
         });
 
         openBook(bookTitle);
-      });
+      }
     } else {
-      setState(() {
-        loading = false;
-        filePath = path;
-      });
-
-      openBook(bookTitle);
+      _loading = false;
     }
   }
 
@@ -86,11 +86,11 @@ class _BookGridViewState extends State<BookGridView> {
       themeColor: Theme.of(context).primaryColor,
       identifier: bookTitle,
       scrollDirection: EpubScrollDirection.HORIZONTAL,
-      nightMode: true
+      nightMode: MediaQuery.of(context).platformBrightness == Brightness.dark
     );
 
     VocsyEpub.open(
-      filePath
+      _filePath
     );
   }
 
