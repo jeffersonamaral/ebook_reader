@@ -111,11 +111,6 @@ class _BookGridViewState extends State<BookGridView> {
         itemBuilder: (context, index) {
           return Container(
             margin: const EdgeInsets.only(bottom: 5),
-            /*
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey)
-            ),
-            */
             child: InkWell(
               onTap: () async {
                 download(

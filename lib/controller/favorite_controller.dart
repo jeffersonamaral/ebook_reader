@@ -3,7 +3,7 @@ import 'package:ebook_reader/model/favorite_repository.dart';
 
 class FavoriteController {
 
-  late FavoriteRepository _repository;
+  final FavoriteRepository _repository;
 
   FavoriteController(this._repository);
 
