@@ -22,8 +22,6 @@ Após clonado, o projeto deve ser aberto usando o Android Studio. Depois de aber
 
 Por fim deve-se executar o projeto selecionando o alvo desejado.
 
-Alternativamente é possível iniciar a execução usando o comando ```flutter run``` no diretório raiz do projeto, sem a necessidade de usar o Android Studio.
-
 ## Release
 
 O release do aplicativo em forma de pacote APK pode ser encontrada no link: https://github.com/jeffersonamaral/ebook_reader/releases/tag/dist
