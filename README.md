@@ -13,7 +13,7 @@ Aplicativo para download e leitura de eBooks.
 ## Requisitos
 
 - Flutter SDK 3.0+
-- [Opicional] Android Studio 2022.3+ (plugins para Dart e Flutter devem estar instalados)
+- Android Studio 2022.3+ (plugins para Dart e Flutter devem estar instalados)
 - Android SDK (para execução em aparelho/emulador Android)
 
 ## Execução
