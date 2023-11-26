@@ -86,7 +86,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                         controller: _tabController,
                         tabs: const [
                           Tab(text: 'Livros', icon: Icon(Icons.book)),
-                          Tab(text: 'Favoritos', icon: Icon(Icons.star),),
+                          Tab(text: 'Favoritos', icon: Icon(Icons.bookmark),),
                         ],
                       )
                     ],
