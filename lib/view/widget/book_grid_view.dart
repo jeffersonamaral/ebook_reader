@@ -127,7 +127,19 @@ class _BookGridViewState extends State<BookGridView> {
                         ),
                         child: Stack(
                           children: [
-                            Image.network(widget._data![index].coverUrl),
+                            Image.network(widget._data![index].coverUrl,
+                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                                return child;
+                              },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }}
+                              ),
                              Positioned.fill(
                               child: widget.withFavoritiesButton ? Align(
                                   alignment: Alignment.topRight,
