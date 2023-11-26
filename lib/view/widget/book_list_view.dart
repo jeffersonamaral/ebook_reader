@@ -124,18 +124,29 @@ class _BookListViewState extends State<BookListView> {
                         child: Stack(
                           children: [
                             Image.network(widget._data![index].coverUrl),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  widget._favoriteCallback(widget._data![index]);
-                                  widget._data![index].favorite = !widget._data![index].favorite;
+                            Positioned.fill(
+                              child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          widget._favoriteCallback(widget._data![index]);
+                                          widget._data![index].favorite = !widget._data![index].favorite;
 
-                                  // FIXME implementar salvar como favorito
-                                });
-                              },
-                              child: widget._data![index].favorite == true
-                                ? const Icon(Icons.bookmark, color: Colors.red,)
-                                : const Icon(Icons.bookmark_border, color: Colors.black,)
+                                          // FIXME implementar salvar como favorito
+                                        });
+                                      },
+                                      child: widget._data![index].favorite == true
+                                          ? Icon(Icons.bookmark,
+                                          color: Colors.red,
+                                          size: IconTheme.of(context).size! * 2
+                                      )
+                                          : Icon(Icons.bookmark_border,
+                                          color: Colors.black,
+                                          size: IconTheme.of(context).size! * 2
+                                      )
+                                  )
+                              ),
                             )
                           ],
                         ),
