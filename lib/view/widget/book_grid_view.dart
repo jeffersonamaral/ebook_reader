@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
-class BookListView extends StatefulWidget {
+class BookGridView extends StatefulWidget {
 
   final List<BookModel>? _data;
 
@@ -15,7 +15,7 @@ class BookListView extends StatefulWidget {
 
   late BookCallback _favoriteCallback;
 
-  BookListView(this._data, this._favorites, {super.key, required BookCallback onFavorite }) {
+  BookGridView(this._data, this._favorites, {super.key, required BookCallback onFavorite }) {
     _favoriteCallback = onFavorite;
 
     /*
@@ -28,11 +28,11 @@ class BookListView extends StatefulWidget {
   }
 
   @override
-  _BookListViewState createState() => _BookListViewState();
+  _BookGridViewState createState() => _BookGridViewState();
 
 }
 
-class _BookListViewState extends State<BookListView> {
+class _BookGridViewState extends State<BookGridView> {
 
   bool loading = false;
   Dio dio = Dio();
@@ -96,16 +96,26 @@ class _BookListViewState extends State<BookListView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return GridView.builder(
         padding: const EdgeInsets.all(10),
         physics: const BouncingScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 2,
+          mainAxisSpacing: 5
+        ),
+        controller: ScrollController(keepScrollOffset: false),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
         itemCount: widget._data?.length,
         itemBuilder: (context, index) {
           return Container(
-            margin: const EdgeInsets.only(bottom: 10),
+            margin: const EdgeInsets.only(bottom: 5),
+            /*
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey)
             ),
+            */
             child: InkWell(
               onTap: () async {
                 download(
@@ -114,8 +124,7 @@ class _BookListViewState extends State<BookListView> {
                     widget._data![index].title);
               },
               child: ListTile(
-                title: Center(
-                  child: Column(
+                title: Column(
                     children: [
                       Container(
                         decoration: BoxDecoration(
@@ -164,7 +173,6 @@ class _BookListViewState extends State<BookListView> {
                       ),
                     ],
                   ),
-                ),
               )
             ),
           );

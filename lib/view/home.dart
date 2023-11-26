@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../model/book_model.dart';
 import '../controller/book_controller.dart';
-import 'widget/book_list_view.dart';
+import 'widget/book_grid_view.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -106,7 +106,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                       });
                       */
 
-                      return BookListView(snapshot.data, null /*_favorites*/, onFavorite: (model) {
+                      return BookGridView(snapshot.data, null /*_favorites*/, onFavorite: (model) {
                         /*
                         if (model.favorite) {
                           _favoriteController.delete(model);
