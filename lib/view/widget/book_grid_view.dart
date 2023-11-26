@@ -13,9 +13,11 @@ class BookGridView extends StatefulWidget {
 
   final List<BookModel>? _favorites;
 
-  late BookCallback _favoriteCallback;
+  BookCallback? _favoriteCallback;
 
-  BookGridView(this._data, this._favorites, {super.key, required BookCallback onFavorite }) {
+  final bool withFavoritiesButton;
+
+  BookGridView(this._data, this._favorites, {super.key, required BookCallback? onFavorite, boolwithFavoritiesButton = true, required this.withFavoritiesButton }) {
     _favoriteCallback = onFavorite;
 
     _data?.forEach((element) {
@@ -131,16 +133,14 @@ class _BookGridViewState extends State<BookGridView> {
                         child: Stack(
                           children: [
                             Image.network(widget._data![index].coverUrl),
-                            Positioned.fill(
-                              child: Align(
+                             Positioned.fill(
+                              child: widget.withFavoritiesButton ? Align(
                                   alignment: Alignment.topRight,
                                   child: InkWell(
                                       onTap: () {
                                         setState(() {
-                                          widget._favoriteCallback(widget._data![index]);
+                                          widget._favoriteCallback!(widget._data![index]);
                                           widget._data![index].favorite = !widget._data![index].favorite;
-
-                                          // FIXME implementar salvar como favorito
                                         });
                                       },
                                       child: widget._data![index].favorite == true
@@ -153,7 +153,7 @@ class _BookGridViewState extends State<BookGridView> {
                                           size: IconTheme.of(context).size! * 2
                                       )
                                   )
-                              ),
+                              ) : Container(),
                             )
                           ],
                         ),

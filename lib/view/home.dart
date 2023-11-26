@@ -118,7 +118,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                         }
                       });
 
-                      return BookGridView(snapshot.data, _favorites, onFavorite: (model) {
+                      return BookGridView(snapshot.data, _favorites,
+                          withFavoritiesButton: true,
+                          onFavorite: (model) {
                         if (model.favorite) {
                           _favoriteController.delete(FavoriteModel.fromMap(model.toMap()));
                         } else {
@@ -134,7 +136,43 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Automa
                 }
               }
           ),
-          const Center(child: Text('Listagem de Favoritos')),
+          FutureBuilder<dynamic>(
+              future: _favoriteController.findAll(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.none
+                    || snapshot.connectionState == ConnectionState.active
+                    || snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  if (snapshot.hasData) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Ocorreu um erro: ${snapshot.error}'),
+                      );
+                    } else {
+                      List<BookModel> books = snapshot.data!;
+
+                      books.forEach((element) {
+                        if (_favorites.contains(element)) {
+                          element.favorite = true;
+                        }
+                      });
+
+                      return BookGridView(snapshot.data, _favorites,
+                        withFavoritiesButton: false,
+                        onFavorite: null,
+                      );
+                    }
+                  } else {
+                    return const Center(
+                      child: Text('Nenhum dado foi encontrado.'),
+                    );
+                  }
+                }
+              }
+          ),
         ],
       ),
     );
